@@ -24,14 +24,16 @@ DOWNLOAD_AUDIO_PATH = os.path.dirname('./DATA')
 #     os.system(f'cd {path} && {command}')
   
 def get_user_audio(url, name, success):
-    print("Downloading....")
+    print("Finding video")
     YouTube_Stream = YouTube(url)
     YouTube_Stream = YouTube_Stream.streams.filter(only_audio=True).first()
+    print("Found!")
     file_name = name.replace(" ", "_")
     success_name = success.replace(" ", "_") + '.mp3'
     userPath = Path('Download.py').parent.resolve()
 #     userPath = str(userPath) + ADDITIONAL_PATH
     path_string = str(userPath) + ADDITIONAL_PATH + '\\Audio'
+    print("Downloading....")
     YouTube_File = YouTube_Stream.download(output_path=path_string, filename=file_name)
     base, ext = os.path.splitext(YouTube_File)
     new_file = base + '.mp3'
@@ -42,6 +44,7 @@ def get_user_video(url, name, success):
     print("Finding video...")
     YouTube_Stream = YouTube(url=url)
     YouTube_Stream = YouTube_Stream.streams.get_highest_resolution()
+    print("Found!")
     file_name = name.replace(" ", "_")
     print("Downloading...")
     path_parent= Path('Download.py').parent.resolve()
