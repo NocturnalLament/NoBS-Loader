@@ -38,9 +38,14 @@ def user_selection_logic(prompt_response):
     elif prompt_response == "MP4":
         download_video_setup()
 
+
+
 if __name__ == "__main__":
-    prompt = file_select()
-    user_selection_logic(prompt_response=prompt)
+    # prompt = file_select()
+    # user_selection_logic(prompt_response=prompt)
+    name = input("Please enter the name of your file: ")
+    url = input("Now, what is the link to your video?: ")
+    ytQuery.add_data_to_db(name=name, url=url)
         
 # userYoutubeLinkInput = input("Please enter the URL to your video: ")
 # # getUserStream = ytQuery.findStream(userYTPath)
