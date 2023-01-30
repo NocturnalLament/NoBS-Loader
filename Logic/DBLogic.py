@@ -3,9 +3,6 @@ from pathlib import Path
 from pytube import YouTube
 from Logic import DownloadFile
 DB_PATH = 'DATA//DB//Test_Downloads.db'
-TABLE_QUERY_OPEN_ALL = 'SELECT * FROM Downloads'
-
-
 
 # def sqlite_conn():
 #     db = sqlite3.connect(DB_PATH)
