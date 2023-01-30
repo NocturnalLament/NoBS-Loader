@@ -4,6 +4,10 @@ import os
 from pathlib import Path
 import asyncio
 import inquirer
+from Logic import DBLogic
+from pytube import YouTube
+from Logic import DownloadFile
+
 
 ytQuery = Logic.Queries.BasicQuery
 ytDownload = Logic.Download
@@ -43,9 +47,16 @@ def user_selection_logic(prompt_response):
 if __name__ == "__main__":
     # prompt = file_select()
     # user_selection_logic(prompt_response=prompt)
-    name = input("Please enter the name of your file: ")
-    url = input("Now, what is the link to your video?: ")
-    ytQuery.add_data_to_db(name=name, url=url)
+     name = input("Please enter the name of your file: ")
+     url = input("Now, what is the link to your video?: ")
+
+     #to be reused in AudioFile instantiation.
+     url_holder = url
+     #ytQuery.add_data_to_db(name=name, url=url)
+     
+     #DBLogic.sqlite_conn('input', album_obj=url)
+     DBLogic.sqlite_routine(url=url, conn_type='input', custom_name=name, input_type='mp3')
+    #DBLogic.sqlite_conn()
         
 # userYoutubeLinkInput = input("Please enter the URL to your video: ")
 # # getUserStream = ytQuery.findStream(userYTPath)
