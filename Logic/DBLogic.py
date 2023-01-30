@@ -41,6 +41,8 @@ def sqlite_routine(url, conn_type, custom_name, input_type):
         conn.commit()
     elif conn_type == 'read':
         cur = cur.execute(usr_sqlite)
+        results = cur.fetchall()
+        return results
 
 def should_commit(download_type):
     if download_type == 'MP4':
