@@ -3,7 +3,7 @@
 /DATA/DB
 /Logic/Queries/__pycache__
 /Logic/__pycache__
-
-/Logic/test.py
+/Logic/metadata.py
+test.py
 
 **.cpython

@@ -1,17 +1,34 @@
 import Logic.Queries.BasicQuery
 import Logic.Download
-import os
-from pathlib import Path
-import asyncio
 import inquirer
 from Logic import DBLogic
-from pytube import YouTube
-from Logic import DownloadFile
+from Logic import Settings
 
 
 ytQuery = Logic.Queries.BasicQuery
 ytDownload = Logic.Download
 #userYTPath = ytQuery.basicQuery()
+def user_settings():
+    questions = [
+        inquirer.Text(name='PathName', message='Please enter a name for your path'),
+        inquirer.Text(name='PathLocation', message='Please enter the path'),
+        inquirer.Text(name='PathDescription', message='Enter a description for this path'),
+        inquirer.List(name='AssociatedTypes', message='What file types will be associated here?',
+                                                                    choices=["MP3", "MP4", "Both MP3 and MP4"])
+    ]
+
+    responses = inquirer.prompt(questions=questions)
+    settings_obj = Settings.User_Path
+    settings_obj = settings_obj(
+        PathName=responses.get('PathName'),
+        Location=responses.get('PathLocation'),
+        Description=responses.get('PathDescription'),
+        FileType=responses.get('AssociatedTypes')
+    )
+    return settings_obj
+
+
+
 
 def file_select():
     questions = [inquirer.List('media_type', message="What media type do you need?",
