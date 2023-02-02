@@ -27,13 +27,13 @@ def sqlite_conn_router(conn_type):
         sqlite_string = 'SELECT * FROM Downloads'               #We don't need that to happen... Again.
         return sqlite_string
 
-def sqlite_routine(url, conn_type, custom_name, input_type):
+def sqlite_routine(conn_type, custom_name="default",url="default", input_type="default"):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    song_data = YouTube(url=url)
     usr_sqlite = sqlite_conn_router(conn_type=conn_type)
-    song = DownloadFile.DownloadFileClass(name=song_data.title, download_name=custom_name, url=url, description=song_data.description, type=input_type, length=song_data.length)
     if conn_type == 'input':
+        song = DownloadFile.DownloadFileClass(name=song_data.title, download_name=custom_name, url=url, description=song_data.description, type=input_type, length=song_data.length)
+        song_data = YouTube(url=url)
         cur = cur.execute(usr_sqlite, (song.name, song.download_name, song.url, song.description, song.type, song.length))
         conn.commit()
     elif conn_type == 'read':
@@ -46,4 +46,65 @@ def should_commit(download_type):
         return True
     elif download_type == 'MP3':
         return False
+
+def list_all(count, name, path, type, list_index=0):
+        print(count)
+        index = list_index
+        while index < count:
+            file_name = name[index]
+            file_path = path[index]
+            file_type = type[index]
+            print('=====================================================================================================')
+            print(f'Name: {file_name}')
+            print(f'Path: {file_path}')
+            print(f'Type: {file_type}')
+            print('=====================================================================================================')
+            index += 1
+            continue
+            
+        
+
+        
+
+def list_downloads():
+    sqlite_string = '''
+        
+        SELECT CustomName FROM Downloads
+    
+    '''
+
+    conn = sqlite3.connect(DB_PATH)
+    curr = conn.cursor()
+    curr.execute(sqlite_string)
+    song_name = curr.fetchall()
+
+    sqlite_string = '''
+    
+        Select DownloadPath FROM Downloads
+    
+    '''
+
+    curr.execute(sqlite_string)
+
+    song_path = curr.fetchall()
+
+    sqlite_string = '''
+    
+        SELECT Type FROM Downloads
+    
+    '''
+
+    curr.execute(sqlite_string)
+
+    song_types = curr.fetchall()
+
+    list_count = len(song_types)
+
+    list_all(list_count, song_name, song_path, song_types)
+
+
+
+    
+
+
 

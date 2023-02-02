@@ -3,11 +3,39 @@ import Logic.Download
 import inquirer
 from Logic import DBLogic
 from Logic import Settings
+import sqlite3
+import os
 
-
+database_path = 'DATA\\DB\\Test_Downloads.db'
+#database_path = os.path.abspath(database_path)
 ytQuery = Logic.Queries.BasicQuery
 ytDownload = Logic.Download
+db = DBLogic
 #userYTPath = ytQuery.basicQuery()
+def save_user_settings(settings_obj: Settings.User_Path):
+    conn = sqlite3.connect(database=database_path)
+    cur = conn.cursor()
+    sqlite_string = '''
+            INSERT INTO Settings(Name, Path, Description, AssociatedType)
+            VALUES(?, ?, ?, ?)                
+    '''
+    cur.execute(sqlite_string, (settings_obj.PathName, settings_obj.Location, settings_obj.Description, settings_obj.FileType))
+    conn.commit()
+    return_to_main_menu = [inquirer.List(name='return', message='Settings saved! Would you like to return to the main menu?', choices=["Yes", "No"])]
+    response = inquirer.prompt(questions=return_to_main_menu)
+    response = response.get('return')
+    if response == 'Yes':
+        file_select()
+
+def load_user_settings():
+    conn = sqlite3.connect(database=database_path)
+    cur = conn.cursor()
+    sqlite_string = '''
+        FROM Settings SELECT *
+    '''
+    results = cur.fetchall()
+    return results
+
 def user_settings():
     questions = [
         inquirer.Text(name='PathName', message='Please enter a name for your path'),
@@ -32,9 +60,10 @@ def user_settings():
 
 def file_select():
     questions = [inquirer.List('media_type', message="What media type do you need?",
-                                choices=["MP3", "MP4"])]
+                                choices=["MP3", "MP4", "Downloads", "Settings"])]
     response = inquirer.prompt(questions)
     response = response.get('media_type')
+    user_selection_logic(response)
     return response
 
 def download_audio_setup():
@@ -58,21 +87,24 @@ def user_selection_logic(prompt_response):
         download_audio_setup()
     elif prompt_response == "MP4":
         download_video_setup()
+    elif prompt_response == "Downloads":
+        db = DBLogic.list_downloads()
+        return None
+    elif prompt_response == 'Settings':
+        user_settings()
 
 
 
 if __name__ == "__main__":
-    # prompt = file_select()
-    # user_selection_logic(prompt_response=prompt)
-     name = input("Please enter the name of your file: ")
-     url = input("Now, what is the link to your video?: ")
-
-     #to be reused in AudioFile instantiation.
-     url_holder = url
-     #ytQuery.add_data_to_db(name=name, url=url)
+    file_select()
+#    user = user_settings()
+#    ins = save_user_settings(user)
+    #  #to be reused in AudioFile instantiation.
+    #  url_holder = url
+    #  #ytQuery.add_data_to_db(name=name, url=url)
      
-     #DBLogic.sqlite_conn('input', album_obj=url)
-     DBLogic.sqlite_routine(url=url, conn_type='input', custom_name=name, input_type='mp3')
+    #  #DBLogic.sqlite_conn('input', album_obj=url)
+    #  DBLogic.sqlite_routine(url=url, conn_type='input', custom_name=name, input_type='mp3')
     #DBLogic.sqlite_conn()
         
 # userYoutubeLinkInput = input("Please enter the URL to your video: ")
@@ -84,4 +116,4 @@ if __name__ == "__main__":
 # success_name = newVideoName
 # #mp4Input = ytDownload.downloadAudio(userYTPath, newVideoName)
 # #ytDownload.convertAudio(download_video_name, output_video_name)
-# ytDownload.get_user_audio(userYoutubeLinkInput, output_video_name, success_name
+# ytDownload.get_user_audio(userYoutubeLinkInput, output_video_name, success_nam
